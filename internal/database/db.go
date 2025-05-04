@@ -12,7 +12,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// DB wraps the SQL database connection
 type DB struct {
 	conn *sql.DB
 }
