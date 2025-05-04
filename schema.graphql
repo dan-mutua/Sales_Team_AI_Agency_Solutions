@@ -1,0 +1,545 @@
+# Main types
+type Lead {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  company: String
+  position: String
+  status: LeadStatus!
+  intentScore: Float!
+  tags: [String!]
+  source: String
+  lastContact: Time
+  nextFollowUp: Time
+  notes: String
+  interactions: [Interaction!]
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type Client {
+  id: ID!
+  name: String!
+  industry: String!
+  website: String
+  contactPerson: String!
+  email: String!
+  phone: String
+  address: String
+  startDate: Time!
+  activeServices: [Service!]!
+  campaigns: [Campaign!]
+  status: ClientStatus!
+  notes: String
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type AIAgent {
+  id: ID!
+  name: String!
+  purpose: String!
+  description: String
+  status: AgentStatus!
+  leads: [Lead!]
+  campaigns: [Campaign!]
+  templates: [MessageTemplate!]
+  stats: AgentStats!
+  lastRun: Time
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type Campaign {
+  id: ID!
+  name: String!
+  description: String
+  client: Client
+  startDate: Time!
+  endDate: Time
+  status: CampaignStatus!
+  budget: Float
+  targets: [TargetAudience!]
+  messages: [MessageTemplate!]
+  aiAgents: [AIAgent!]
+  metrics: CampaignMetrics
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type Interaction {
+  id: ID!
+  lead: Lead!
+  type: InteractionType!
+  channel: Channel!
+  message: String
+  aiAgent: AIAgent
+  template: MessageTemplate
+  timestamp: Time!
+  response: String
+  status: InteractionStatus!
+  metrics: InteractionMetrics
+  notes: String
+  createdAt: Time!
+}
+
+type MessageTemplate {
+  id: ID!
+  name: String!
+  content: String!
+  variables: [String!]
+  channel: Channel!
+  purpose: String!
+  aiAgent: AIAgent
+  campaign: Campaign
+  metrics: TemplateMetrics
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type TrainingProgram {
+  id: ID!
+  name: String!
+  description: String!
+  modules: [TrainingModule!]!
+  assignedUsers: [User!]
+  startDate: Time!
+  endDate: Time
+  status: TrainingStatus!
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type TrainingModule {
+  id: ID!
+  name: String!
+  description: String!
+  content: String!
+  duration: Int!
+  order: Int!
+  program: TrainingProgram!
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  role: UserRole!
+  phone: String
+  position: String
+  status: UserStatus!
+  clients: [Client!]
+  leads: [Lead!]
+  campaigns: [Campaign!]
+  trainingPrograms: [TrainingProgram!]
+  createdAt: Time!
+  updatedAt: Time
+}
+
+type Service {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float!
+  features: [String!]!
+  clients: [Client!]
+  createdAt: Time!
+  updatedAt: Time
+}
+
+# Stats and metrics types
+type AgentStats {
+  id: ID!
+  agent: AIAgent!
+  leadsEngaged: Int!
+  messagesDelivered: Int!
+  responseRate: Float!
+  conversionRate: Float!
+  avgResponseTime: Float!
+  period: String!
+  createdAt: Time!
+}
+
+type CampaignMetrics {
+  id: ID!
+  campaign: Campaign!
+  leadsGenerated: Int!
+  interactions: Int!
+  conversions: Int!
+  conversionRate: Float!
+  cost: Float!
+  roi: Float!
+  period: String!
+  createdAt: Time!
+}
+
+type InteractionMetrics {
+  id: ID!
+  interaction: Interaction!
+  deliveryStatus: String!
+  openRate: Float
+  clickRate: Float
+  responseTime: Float
+  sentiment: String
+  createdAt: Time!
+}
+
+type TemplateMetrics {
+  id: ID!
+  template: MessageTemplate!
+  usageCount: Int!
+  responseRate: Float!
+  conversionRate: Float!
+  period: String!
+  createdAt: Time!
+}
+
+type TargetAudience {
+  id: ID!
+  name: String!
+  industry: String!
+  companySize: String
+  location: String
+  decisionMakerRole: String
+  painPoints: [String!]
+  campaign: Campaign!
+  createdAt: Time!
+  updatedAt: Time
+}
+
+# Enum types
+enum LeadStatus {
+  NEW
+  CONTACTED
+  ENGAGED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+  DORMANT
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  CHURNED
+}
+
+enum AgentStatus {
+  ACTIVE
+  PAUSED
+  TRAINING
+  MAINTENANCE
+  DEPRECATED
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum InteractionType {
+  EMAIL
+  CALL
+  SMS
+  SOCIAL
+  CHAT
+  MEETING
+  OTHER
+}
+
+enum Channel {
+  EMAIL
+  PHONE
+  SMS
+  LINKEDIN
+  TWITTER
+  FACEBOOK
+  INSTAGRAM
+  WHATSAPP
+  IN_PERSON
+  OTHER
+}
+
+enum InteractionStatus {
+  SCHEDULED
+  DELIVERED
+  OPENED
+  RESPONDED
+  FAILED
+  BOUNCED
+}
+
+enum TrainingStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  SALES_REP
+  BDR
+  CLIENT
+  AI_ENGINEER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  TRAINING
+  ON_LEAVE
+}
+
+# Scalar types
+scalar Time
+
+# Input types
+input LeadInput {
+  name: String!
+  email: String!
+  phone: String
+  company: String
+  position: String
+  status: LeadStatus
+  intentScore: Float
+  tags: [String!]
+  source: String
+  notes: String
+}
+
+input ClientInput {
+  name: String!
+  industry: String!
+  website: String
+  contactPerson: String!
+  email: String!
+  phone: String
+  address: String
+  startDate: Time!
+  status: ClientStatus
+  notes: String
+  serviceIds: [ID!]
+}
+
+input AIAgentInput {
+  name: String!
+  purpose: String!
+  description: String
+  status: AgentStatus
+  templateIds: [ID!]
+}
+
+input CampaignInput {
+  name: String!
+  description: String
+  clientId: ID
+  startDate: Time!
+  endDate: Time
+  status: CampaignStatus
+  budget: Float
+  aiAgentIds: [ID!]
+}
+
+input InteractionInput {
+  leadId: ID!
+  type: InteractionType!
+  channel: Channel!
+  message: String
+  aiAgentId: ID
+  templateId: ID
+  status: InteractionStatus
+  notes: String
+}
+
+input MessageTemplateInput {
+  name: String!
+  content: String!
+  variables: [String!]
+  channel: Channel!
+  purpose: String!
+  aiAgentId: ID
+  campaignId: ID
+}
+
+input TrainingProgramInput {
+  name: String!
+  description: String!
+  startDate: Time!
+  endDate: Time
+  status: TrainingStatus
+  userIds: [ID!]
+}
+
+input TrainingModuleInput {
+  name: String!
+  description: String!
+  content: String!
+  duration: Int!
+  order: Int!
+  programId: ID!
+}
+
+input UserInput {
+  name: String!
+  email: String!
+  role: UserRole!
+  phone: String
+  position: String
+  status: UserStatus
+  clientIds: [ID!]
+  campaignIds: [ID!]
+  trainingProgramIds: [ID!]
+}
+
+input ServiceInput {
+  name: String!
+  description: String!
+  price: Float!
+  features: [String!]!
+}
+
+input TargetAudienceInput {
+  name: String!
+  industry: String!
+  companySize: String
+  location: String
+  decisionMakerRole: String
+  painPoints: [String!]
+  campaignId: ID!
+}
+
+input LeadFilterInput {
+  status: [LeadStatus!]
+  minIntentScore: Float
+  tags: [String!]
+  source: String
+  lastContactAfter: Time
+  lastContactBefore: Time
+}
+
+input CampaignFilterInput {
+  status: [CampaignStatus!]
+  clientId: ID
+  startDateAfter: Time
+  startDateBefore: Time
+  endDateAfter: Time
+  endDateBefore: Time
+}
+
+# Query and Mutation
+type Query {
+  # Lead queries
+  lead(id: ID!): Lead
+  leads(filter: LeadFilterInput, limit: Int, offset: Int): [Lead!]!
+  
+  # Client queries
+  client(id: ID!): Client
+  clients(status: ClientStatus, limit: Int, offset: Int): [Client!]!
+  
+  # AI Agent queries
+  aiAgent(id: ID!): AIAgent
+  aiAgents(status: AgentStatus, purpose: String, limit: Int, offset: Int): [AIAgent!]!
+  
+  # Campaign queries
+  campaign(id: ID!): Campaign
+  campaigns(filter: CampaignFilterInput, limit: Int, offset: Int): [Campaign!]!
+  
+  # Interaction queries
+  interaction(id: ID!): Interaction
+  interactions(leadId: ID, aiAgentId: ID, status: InteractionStatus, limit: Int, offset: Int): [Interaction!]!
+  
+  # Message template queries
+  messageTemplate(id: ID!): MessageTemplate
+  messageTemplates(channel: Channel, purpose: String, aiAgentId: ID, limit: Int, offset: Int): [MessageTemplate!]!
+  
+  # Training program queries
+  trainingProgram(id: ID!): TrainingProgram
+  trainingPrograms(status: TrainingStatus, limit: Int, offset: Int): [TrainingProgram!]!
+  
+  # User queries
+  user(id: ID!): User
+  users(role: UserRole, status: UserStatus, limit: Int, offset: Int): [User!]!
+  
+  # Service queries
+  service(id: ID!): Service
+  services(limit: Int, offset: Int): [Service!]!
+  
+  # Dashboard metrics
+  aiAgentPerformance(id: ID!, period: String!): AgentStats
+  campaignPerformance(id: ID!, period: String!): CampaignMetrics
+  overallMetrics(period: String!): CampaignMetrics
+}
+
+type Mutation {
+  # Lead mutations
+  createLead(input: LeadInput!): Lead!
+  updateLead(id: ID!, input: LeadInput!): Lead!
+  deleteLead(id: ID!): Boolean!
+  assignLeadToAIAgent(leadId: ID!, aiAgentId: ID!): Lead!
+  
+  # Client mutations
+  createClient(input: ClientInput!): Client!
+  updateClient(id: ID!, input: ClientInput!): Client!
+  deleteClient(id: ID!): Boolean!
+  
+  # AI Agent mutations
+  createAIAgent(input: AIAgentInput!): AIAgent!
+  updateAIAgent(id: ID!, input: AIAgentInput!): AIAgent!
+  deleteAIAgent(id: ID!): Boolean!
+  
+  # Campaign mutations
+  createCampaign(input: CampaignInput!): Campaign!
+  updateCampaign(id: ID!, input: CampaignInput!): Campaign!
+  deleteCampaign(id: ID!): Boolean!
+  
+  # Interaction mutations
+  createInteraction(input: InteractionInput!): Interaction!
+  updateInteraction(id: ID!, input: InteractionInput!): Interaction!
+  deleteInteraction(id: ID!): Boolean!
+  
+  # Message template mutations
+  createMessageTemplate(input: MessageTemplateInput!): MessageTemplate!
+  updateMessageTemplate(id: ID!, input: MessageTemplateInput!): MessageTemplate!
+  deleteMessageTemplate(id: ID!): Boolean!
+  
+  # Training program mutations
+  createTrainingProgram(input: TrainingProgramInput!): TrainingProgram!
+  updateTrainingProgram(id: ID!, input: TrainingProgramInput!): TrainingProgram!
+  deleteTrainingProgram(id: ID!): Boolean!
+  
+  # Training module mutations
+  createTrainingModule(input: TrainingModuleInput!): TrainingModule!
+  updateTrainingModule(id: ID!, input: TrainingModuleInput!): TrainingModule!
+  deleteTrainingModule(id: ID!): Boolean!
+  
+  # User mutations
+  createUser(input: UserInput!): User!
+  updateUser(id: ID!, input: UserInput!): User!
+  deleteUser(id: ID!): Boolean!
+  
+  # Service mutations
+  createService(input: ServiceInput!): Service!
+  updateService(id: ID!, input: ServiceInput!): Service!
+  deleteService(id: ID!): Boolean!
+  
+  # Target audience mutations
+  createTargetAudience(input: TargetAudienceInput!): TargetAudience!
+  updateTargetAudience(id: ID!, input: TargetAudienceInput!): TargetAudience!
+  deleteTargetAudience(id: ID!): Boolean!
+  
+  # AI Agent operations
+  triggerAIAgentRun(id: ID!): Boolean!
+  pauseAIAgent(id: ID!): Boolean!
+  resumeAIAgent(id: ID!): Boolean!
+}
