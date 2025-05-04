@@ -1,5 +1,3 @@
-Here's a brief Markdown description to indicate that this project is still in development:
-
 # Sales Team AI Agency Solutions (Under Development) 🚧
 
 This project is currently in active development. We're building a modern AI-powered sales agency management system using Go and GraphQL.
